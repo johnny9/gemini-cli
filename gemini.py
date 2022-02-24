@@ -2,6 +2,10 @@ import argparse
 import yaml
 import datetime
 import requests
+import json
+import base64
+import time
+from hashlib import hmac
 
 
 CONFIG_PATH = '~/.gemini.yaml'
@@ -12,7 +16,7 @@ def parse_configuration():
     with open(CONFIG_PATH, 'r') as file:
         return yaml.safe_load(file)
 
-def new_order(type, )
+def new_order(side, type, amount, price=None):
     endpoint = "/v1/order/new"
     url = GEMINI_BASE_URL + endpoint
 
@@ -48,7 +52,10 @@ def new_order(type, )
                              data=None,
                              headers=request_headers)
 
-new_order = response.json()
+    new_order = response.json()
+
+def order(args):
+    pass
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -56,5 +63,10 @@ if __name__ == "__main__":
     order_command = commands.add_parser('order')
     order_command.add_argument('direction')
     order_command.add_argument('type')
+    order_command.add_argument('amount', type=int)
+    order_command.add_argument('price', required=False)
+
+    order_command.set_defaults(func=order)
 
     args = parser.parse_args()
+    args.func(args)
